@@ -1,381 +1,254 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-* {box-sizing: border-box;}
-
-body { 
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.header {
-  overflow: hidden;
-  background-color: #f1f1f1;
-  padding: 20px 10px;
-}
-
-.header a {
-  float: left;
-  color: black;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px; 
-  line-height: 25px;
-  border-radius: 4px;
-}
-
-.header a.logo {
-  font-size: 25px;
-  font-weight: bold;
-}
-
-.header a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.header a.active {
-  background-color: dodgerblue;
-  color: white;
-}
-
-.header-right {
-  float: right;
-}
-
-@media screen and (max-width: 500px) {
-  .header a {
-    float: none;
-    display: block;
-    text-align: left;
-  }
-  
-  .header-right {
-    float: none;
-  }
-}
-
-.sliderClass {
-  margin-top: 25px;
-  margin-bottom: 25px;
-}
-</style>
-<div class="header">
-  <a href="#default" class="logo">Universal Control Unit</a>
-  <div class="header-right">
-    <a href="index.html">Home</a>
-    <a class="active" href="devices.html">Devices</a>
-    <a href="login.html">Login</a>
-  </div>
-</div>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .header {
+            overflow: hidden;
+            background-color: #f1f1f1;
+            padding: 20px 10px;
+        }
+        
+        .header a {
+            float: left;
+            color: black;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            line-height: 25px;
+            border-radius: 4px;
+        }
+        
+        .header a.logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+        
+        .header a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        .header a.active {
+            background-color: dodgerblue;
+            color: white;
+        }
+        
+        .header-right {
+            float: right;
+        }
+        
+        @media screen and (max-width: 500px) {
+            .header a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+            .header-right {
+                float: none;
+            }
+        }
+        
+        .sliderClass {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+    </style>
+    <div class="header">
+        <a href="#default" class="logo">Universal Control Unit</a>
+        <div class="header-right">
+            <a href="index.html">Home</a>
+            <a class="active" href="devices.html">Devices</a>
+            <a href="login.html">Login</a>
+        </div>
+    </div>
 </head>
+
 <body>
 
+    <div style="padding-left:20px" id="device_page">
+        <h1>Device Page</h1>
 
+    </div>
 
-<div style="padding-left:20px" id="device_page">
-  <h1>Device Page</h1>
-  
-  
-  
-</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var deviceData = "";
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-var deviceData = "";
-
-
-function renderDeviceUI(data, i) {
-  if (data.devType == "light")
-  {
-  var devicediv = document.createElement("div");
-  devicediv.id = data.udid;
-  devicediv.display = "block";
-  var br = document.createElement("br");
-  var a = document.createElement('a');
-  var linkText = document.createTextNode("UDID: " + data.udid);
-  a.appendChild(linkText);
-  a.title = data.udid;
-  a.href = "index.html#test";
-  a.style.fontSize = "x-large";
-  div.appendChild(a);
-  div.appendChild(br);
-
-  var img1 = document.createElement('img');
-  var img2 = document.createElement('img');
-  img1.src = 'light_off.png';
-  img1.width = '25';
-  img1.height = '25';
-  img1.style.margin = '0px 0px 20px 0px';
-  img2.src = 'light_on.png';
-  img2.width = '25';
-  img2.height = '25';
-  img2.style.margin = '0px 0px 20px 0px';
-  devicediv.appendChild(img1);
-
-  var input1 = document.createElement('input');
-  input1.setAttribute('class', 'sliderClass');
-  input1.setAttribute('id', 'test' + data.udid);
-  input1.setAttribute('type', 'range');
-  input1.setAttribute('min', 0);
-  input1.setAttribute('max', 100);
-  input1.setAttribute('step', 1);
-  input1.setAttribute('value', 50);
-  
-
-  var value = document.createElement('p');
-  value.setAttribute('id', 'sliderValue' + i);
-  console.log("Currently adding sliderValue" + i);
-  value.innerHTML = "Value: " + input1.value;
-
-  devicediv.appendChild(input1);
-  devicediv.appendChild(img2);
-  devicediv.appendChild(value);
-  div.appendChild(devicediv);
-  input1.oninput = function() {
-    value.innerHTML = "Value: " + this.value;
-    $.ajax({
-        url: 'http://localhost:5000/dummy/device/' + data.udid + '/lightValue',
-        type: 'POST',
-        data: {
-            value: this.value
-        },
-    })
-    .done(function(result) {
-        console.log(result)
-    })
-
-  }
-}
-
-else if (data.devType == "volume")
-{
-  var devicediv = document.createElement("div");
-  devicediv.id = data.udid;
-  devicediv.display = "block";
-  var br = document.createElement("br");
-  var a = document.createElement('a');
-  var linkText = document.createTextNode("UDID: " + data.udid);
-  a.appendChild(linkText);
-  a.title = data.udid;
-  a.href = "index.html#test";
-  a.style.fontSize = "x-large";
-  div.appendChild(a);
-  div.appendChild(br);
-
-  var img1 = document.createElement('img');
-  var img2 = document.createElement('img');
-  img1.src = 'mute.png';
-  img1.width = '25';
-  img1.height = '25';
-  img1.style.margin = '0px 0px 20px 0px';
-  img2.src = 'max.png';
-  img2.width = '25';
-  img2.height = '25';
-  img2.style.margin = '0px 0px 20px 0px';
-  devicediv.appendChild(img1);
-
-  var input1 = document.createElement('input');
-  input1.setAttribute('class', 'sliderClass');
-  input1.setAttribute('id', 'test' + data.udid);
-  input1.setAttribute('type', 'range');
-  input1.setAttribute('min', 0);
-  input1.setAttribute('max', 100);
-  input1.setAttribute('step', 1);
-  input1.setAttribute('value', 50);
-  
-
-  var value = document.createElement('p');
-  value.setAttribute('id', 'sliderValue' + i);
-  console.log("Currently adding sliderValue" + i);
-  value.innerHTML = "Value: " + input1.value;
-
-  devicediv.appendChild(input1);
-  devicediv.appendChild(img2);
-  //devicediv.appendChild(form);
-  devicediv.appendChild(value);
-  div.appendChild(devicediv);
-  input1.oninput = function() {
-    value.innerHTML = "Value: " + this.value;
-    $.ajax({
-        url: 'http://localhost:5000/dummy/device/' + data.udid + '/volumeLevel',
-        type: 'POST',
-        data: {
-            value: this.value
-        },
-    })
-    .done(function(result) {
-        console.log(result)
-    })
-
-  }
-
-
-}
-else
-{
-  var devicediv = document.createElement("div");
-  devicediv.id = data.udid;
-  devicediv.display = "block";
-  var br = document.createElement("br");
-  var a = document.createElement('a');
-  var linkText = document.createTextNode("UDID: " + data.udid);
-  a.appendChild(linkText);
-  a.title = data.udid;
-  a.href = "index.html#test";
-  a.style.fontSize = "x-large";
-  div.appendChild(a);
-  div.appendChild(br);
-
-  var img1 = document.createElement('img');
-  var locked = (data.values.isLocked == 'true');
-  
-  if (locked == true)
-  {
-    img1.src = "locked.png";
-  }
-  else
-  {
-    img1.src = "unlocked.png";
-  }
-  console.log(locked);
-  devicediv.appendChild(img1);
-  div.appendChild(devicediv);
-
-  img1.onclick = function() {
-    $.ajax({
-        url: 'http://localhost:5000/dummy/device/' + data.udid + '/isLocked',
-        type: 'POST',
-        data: {
-            value: !locked
-        },
-    })
-    .done(function(result) {
-        console.log(result)
-        locked = !locked;
-        if (locked == true)
-        {
-          img1.src = "locked.png";
+        function renderDeviceUI(data, i) {
+            if (data.devType == "light") {
+                var devicediv = document.createElement("div");
+                devicediv.id = data.udid;
+                devicediv.display = "block";
+                var br = document.createElement("br");
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("UDID: " + data.udid);
+                a.appendChild(linkText);
+                a.title = data.udid;
+                a.href = "index.html#test";
+                a.style.fontSize = "x-large";
+                div.appendChild(a);
+                div.appendChild(br);
+                var img1 = document.createElement('img');
+                var img2 = document.createElement('img');
+                img1.src = 'light_off.png';
+                img1.width = '25';
+                img1.height = '25';
+                img1.style.margin = '0px 0px 20px 0px';
+                img2.src = 'light_on.png';
+                img2.width = '25';
+                img2.height = '25';
+                img2.style.margin = '0px 0px 20px 0px';
+                devicediv.appendChild(img1);
+                var input1 = document.createElement('input');
+                input1.setAttribute('class', 'sliderClass');
+                input1.setAttribute('id', 'test' + data.udid);
+                input1.setAttribute('type', 'range');
+                input1.setAttribute('min', 0);
+                input1.setAttribute('max', 100);
+                input1.setAttribute('step', 1);
+                input1.setAttribute('value', 50);
+                var value = document.createElement('p');
+                value.setAttribute('id', 'sliderValue' + i);
+                console.log("Currently adding sliderValue" + i);
+                value.innerHTML = "Value: " + input1.value;
+                devicediv.appendChild(input1);
+                devicediv.appendChild(img2);
+                devicediv.appendChild(value);
+                div.appendChild(devicediv);
+                input1.oninput = function() {
+                    value.innerHTML = "Value: " + this.value;
+                    $.ajax({
+                            url: 'http://localhost:5000/dummy/device/' + data.udid + '/lightValue',
+                            type: 'POST',
+                            data: {
+                                value: this.value
+                            },
+                        })
+                        .done(function(result) {
+                            console.log(result)
+                        })
+                }
+            } else if (data.devType == "volume") {
+                var devicediv = document.createElement("div");
+                devicediv.id = data.udid;
+                devicediv.display = "block";
+                var br = document.createElement("br");
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("UDID: " + data.udid);
+                a.appendChild(linkText);
+                a.title = data.udid;
+                a.href = "index.html#test";
+                a.style.fontSize = "x-large";
+                div.appendChild(a);
+                div.appendChild(br);
+                var img1 = document.createElement('img');
+                var img2 = document.createElement('img');
+                img1.src = 'mute.png';
+                img1.width = '25';
+                img1.height = '25';
+                img1.style.margin = '0px 0px 20px 0px';
+                img2.src = 'max.png';
+                img2.width = '25';
+                img2.height = '25';
+                img2.style.margin = '0px 0px 20px 0px';
+                devicediv.appendChild(img1);
+                var input1 = document.createElement('input');
+                input1.setAttribute('class', 'sliderClass');
+                input1.setAttribute('id', 'test' + data.udid);
+                input1.setAttribute('type', 'range');
+                input1.setAttribute('min', 0);
+                input1.setAttribute('max', 100);
+                input1.setAttribute('step', 1);
+                input1.setAttribute('value', 50);
+                var value = document.createElement('p');
+                value.setAttribute('id', 'sliderValue' + i);
+                console.log("Currently adding sliderValue" + i);
+                value.innerHTML = "Value: " + input1.value;
+                devicediv.appendChild(input1);
+                devicediv.appendChild(img2);
+                devicediv.appendChild(value);
+                div.appendChild(devicediv);
+                input1.oninput = function() {
+                    value.innerHTML = "Value: " + this.value;
+                    $.ajax({
+                            url: 'http://localhost:5000/dummy/device/' + data.udid + '/volumeLevel',
+                            type: 'POST',
+                            data: {
+                                value: this.value
+                            },
+                        })
+                        .done(function(result) {
+                            console.log(result)
+                        })
+                }
+            } else {
+                var devicediv = document.createElement("div");
+                devicediv.id = data.udid;
+                devicediv.display = "block";
+                var br = document.createElement("br");
+                var a = document.createElement('a');
+                var linkText = document.createTextNode("UDID: " + data.udid);
+                a.appendChild(linkText);
+                a.title = data.udid;
+                a.href = "index.html#test";
+                a.style.fontSize = "x-large";
+                div.appendChild(a);
+                div.appendChild(br);
+                var img1 = document.createElement('img');
+                var locked = (data.values.isLocked == 'true');
+                if (locked == true) {
+                    img1.src = "locked.png";
+                } else {
+                    img1.src = "unlocked.png";
+                }
+                console.log(locked);
+                devicediv.appendChild(img1);
+                div.appendChild(devicediv);
+                img1.onclick = function() {
+                    $.ajax({
+                            url: 'http://localhost:5000/dummy/device/' + data.udid + '/isLocked',
+                            type: 'POST',
+                            data: {
+                                value: !locked
+                            },
+                        })
+                        .done(function(result) {
+                            console.log(result)
+                            locked = !locked;
+                            if (locked == true) {
+                                img1.src = "locked.png";
+                            } else {
+                                img1.src = "unlocked.png";
+                            }
+                        })
+                }
+            }
         }
-        else
-        {
-          img1.src = "unlocked.png";
-        }
-    })
+        var div = document.getElementById("device_page");
+        $.getJSON('http://localhost:5000/dummy/devices', function(data) {
+            })
+            .done(function(data) {
+                for (var j = 0; j < data.length; j++) {
+                    (function() {
+                        var i = j;
+                        renderDeviceUI(data[i], j);
+                    })();
+                }
 
-  }
-
-}
-}
-
-var div = document.getElementById("device_page");
-
-$.getJSON('http://localhost:5000/dummy/devices', function(data) {
-      for (var i = 0; i < data.length; i++)
-      {
-        // var devicediv = document.createElement("div");
-        // devicediv.id = data[i].udid;
-        // var br = document.createElement("br");
-        // var a = document.createElement('a');
-        // var linkText = document.createTextNode("UDID: " + data[i].udid);
-        // a.appendChild(linkText);
-        // a.title = data[i].udid;
-        // a.href = "index.html#test";
-        // div.appendChild(devicediv);
-        // div.appendChild(a);
-        // div.appendChild(br);
-      }
-  })
-  .done(function(data) {
-    // deviceData = data;
-    // var getDeviceDiv = document.getElementById(data[1].udid);
-    // var testText = document.createTextNode("Test");
-    // getDeviceDiv.appendChild(testText);
-    // console.log(data[1].udid);
-
-    //var form = document.createElement('form');
-    for (var j=0; j < data.length; j++)
-    {
-      (function(){
-      var i = j;
-      renderDeviceUI(data[i], j);
-      /*var devicediv = document.createElement("div");
-      devicediv.id = data[i].udid;
-      devicediv.display = "block";
-      var br = document.createElement("br");
-      var a = document.createElement('a');
-      var linkText = document.createTextNode("UDID: " + data[i].udid);
-      a.appendChild(linkText);
-      a.title = data[i].udid;
-      a.href = "index.html#test";
-      a.style.fontSize = "x-large";
-      div.appendChild(devicediv);
-      div.appendChild(a);
-      div.appendChild(br);
-
-      var input1 = document.createElement('input');
-      input1.setAttribute('class', 'sliderClass');
-      input1.setAttribute('id', 'test' + data[i].udid);
-      input1.setAttribute('type', 'range');
-      input1.setAttribute('min', 0);
-      input1.setAttribute('max', 100);
-      input1.setAttribute('step', 1);
-      input1.setAttribute('value', 50);
-      
-
-      var value = document.createElement('p');
-      value.setAttribute('id', 'sliderValue' + i);
-      console.log("Currently adding sliderValue" + i);
-      value.innerHTML = "Value: " + input1.value;
-
-      devicediv.appendChild(input1);
-      //devicediv.appendChild(form);
-      devicediv.appendChild(value);
-      div.appendChild(devicediv);
-      input1.oninput = function() {
-        value.innerHTML = "Value: " + this.value;
-        $.ajax({
-            url: 'http://localhost:5000/dummy/device/' + data[i].udid + '/lightValue',
-            type: 'POST',
-            data: {
-                value: this.value
-            },
-        })
-        .done(function(result) {
-            console.log(result)
-        })
-
-      } */  
-
-      // To update the slider value dynamically
-      })();
-    }
-    // var classTest = document.getElementsByClassName('sliderClass');
-    // for (var i=0; i < data.length; ++i)
-    // {
-    //   (function(){
-    //     var j = i;
-    //     classTest.item(j).oninput = function() {
-    //     //document.getElementById('sliderValue' + i).innerHTML = this.value;
-    //     console.log("Currently sliding value " + j);
-    //   }
-    //   })();
-    
-    // }
-
-
-
-  
-  });
-  
-
-  
-
-  
-
-  </script>
+            });
+    </script>
 </body>
+
 </html>
