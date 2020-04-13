@@ -84,26 +84,47 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+        /**
+         * Sets var div to the start of the page, called device_page in the HTML.
+         * Loops through all devices returned by the dummy API and renders their respective UI's.
+         * 
+         */
         var deviceData = "";
-		var br = document.createElement("br"); //line break
-		
-		function createDeviceTitle(udid) {
-			var deviceTitle = document.createElement('a');
-			var linkText = document.createTextNode("UDID: " + udid);
-			deviceTitle.appendChild(linkText);
-			deviceTitle.title = udid;
-			deviceTitle.href = "devices.html#" + udid;
-			deviceTitle.style.fontSize = "x-large";
-			return deviceTitle;
-		}
-		
-		function createSlider(img1_path, img2_path, udid) {
+        var div = document.getElementById("device_page");
+        $.getJSON('http://localhost:5000/dummy/devices', function(data) {})
+            .done(function(data) {
+                for (var j = 0; j < data.length; j++) {
+                    renderDeviceUI(data[j]);
+                }
+            });
+        /**
+         * Creates a device title
+         *
+         * @param {string} udid The device UDID
+         * @return {HTML Element} A HTML div element with the title
+         */
+        function createDeviceTitle(udid) {
+            var deviceTitle = document.createElement('a');
+            var linkText = document.createTextNode("UDID: " + udid);
+            deviceTitle.appendChild(linkText);
+            deviceTitle.title = udid;
+            deviceTitle.href = "devices.html#" + udid;
+            deviceTitle.style.fontSize = "x-large";
+            return deviceTitle;
+        }
+        /**
+         * Creates a slider interface
+         *
+         * @param {string} img1_path The left image path
+         * @param {string} img2_path The right image path
+         * @param {string} udid The device UDID
+         * @return {HTML Element} A HTML div element with the slider interface
+         */
+        function createSlider(img1_path, img2_path, udid) {
             var deviceDiv = document.createElement("div");
             deviceDiv.id = udid;
             deviceDiv.display = "block";
-
             var sliderDiv = document.createElement("div");
-
             var img1 = document.createElement('img');
             var img2 = document.createElement('img');
             img1.src = img1_path;
@@ -114,7 +135,6 @@
             img2.width = '25';
             img2.height = '25';
             img2.style.margin = '0px 0px 20px 0px';
-            
             var sliderInput = document.createElement('input');
             sliderInput.setAttribute('class', 'sliderClass');
             sliderInput.setAttribute('id', udid + '_slider');
@@ -123,24 +143,27 @@
             sliderInput.setAttribute('max', 100);
             sliderInput.setAttribute('step', 1);
             sliderInput.setAttribute('value', 50);
-
             var sliderValue = document.createElement('p');
             sliderValue.setAttribute('id', udid + '_sliderValue');
             sliderValue.innerHTML = "Value: " + sliderInput.value;
-
             sliderDiv.appendChild(img1);
             sliderDiv.appendChild(sliderInput);
             sliderDiv.appendChild(img2);
             sliderDiv.appendChild(sliderValue);
-
             deviceDiv.appendChild(sliderDiv);
-
             return deviceDiv;
         }
-		
-		
-		function createToggle(img1_path, img2_path, udid, startState) {
-		    var deviceDiv = document.createElement("div");
+        /**
+         * Creates a toggle interface (such as lock or on/off)
+         *
+         * @param {string} img1_path The on/locked image path
+         * @param {string} img2_path The off/unlocked image path
+         * @param {string} udid The device UDID
+         * @param {string} startState The start state of the device ('true' or 'false')
+         * @return {HTML Element} A HTML div element with the toggle interface
+         */
+        function createToggle(img1_path, img2_path, udid, startState) {
+            var deviceDiv = document.createElement("div");
             deviceDiv.id = udid;
             deviceDiv.display = "block";
             var img = document.createElement('img');
@@ -152,18 +175,19 @@
                 img.src = img2_path;
             }
             deviceDiv.appendChild(img);
-
             return deviceDiv;
-		}
-
-        function renderDeviceUI(data, i) {
+        }
+        /**
+         * Creates a toggle interface (such as lock or on/off)
+         *
+         * @param {JSON} data  Device-specific data in JSON format
+         */
+        function renderDeviceUI(data) {
             if (data.devType == "light") {
                 var deviceTitle = createDeviceTitle(data.udid); // LATER PUT OUTSIDE IF/ELIF STATEMENT
                 div.appendChild(deviceTitle);
-
                 var deviceDiv = createSlider('light_off.png', 'light_on.png', data.udid);
                 div.appendChild(deviceDiv);
-
                 document.getElementById(data.udid + '_slider').oninput = function() {
                     document.getElementById(data.udid + '_sliderValue').innerHTML = "Value: " + this.value;
                     $.ajax({
@@ -177,14 +201,11 @@
                             console.log(result)
                         })
                 }
-            } 
-            else if (data.devType == "volume") {
+            } else if (data.devType == "volume") {
                 var deviceTitle = createDeviceTitle(data.udid); // LATER PUT OUTSIDE IF/ELIF STATEMENT
                 div.appendChild(deviceTitle);
-
                 var deviceDiv = createSlider('volume_off.png', 'volume_on.png', data.udid);
                 div.appendChild(deviceDiv);
-
                 document.getElementById(data.udid + '_slider').oninput = function() {
                     document.getElementById(data.udid + '_sliderValue').innerHTML = "Value: " + this.value;
                     $.ajax({
@@ -198,17 +219,12 @@
                             console.log(result)
                         })
                 }
-            } 
-            else if (data.devType == "lock") {
+            } else if (data.devType == "lock") {
                 var deviceTitle = createDeviceTitle(data.udid);
                 div.appendChild(deviceTitle);
-
                 var deviceDiv = createToggle('locked.png', 'unlocked.png', data.udid, data.value);
                 div.appendChild(deviceDiv);
-
                 var locked = (data.values.isLocked == 'true');
-                console.log(data.values.isLocked);
-
                 document.getElementById(data.udid + "_img").onclick = function() {
                     $.ajax({
                             url: 'http://localhost:5000/dummy/device/' + data.udid + '/isLocked',
@@ -226,20 +242,15 @@
                             }
                         })
                 }
+            } else {
+                var deviceTitle = createDeviceTitle(data.udid);
+                div.appendChild(deviceTitle);
+                var noDeviceDiv = document.createElement('div');
+                noDeviceDiv.appendChild(document.createTextNode("No device type set"));
+                noDeviceDiv.style.margin = '20px 0px 20px 0px';
+                div.appendChild(noDeviceDiv);
             }
         }
-        var div = document.getElementById("device_page");
-        $.getJSON('http://localhost:5000/dummy/devices', function(data) {
-            })
-            .done(function(data) {
-                for (var j = 0; j < data.length; j++) {
-                    (function() {
-                        var i = j;
-                        renderDeviceUI(data[i], j);
-                    })();
-                }
-
-            });
     </script>
 </body>
 
